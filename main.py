@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # Python scripts for running Microclimate System.
-
 import sys
 import Adafruit_DHT
 import datetime
@@ -56,9 +55,15 @@ def read_command_line_params():
 
 # read current temperature and humidity
 def read_from_dht(sensor, pin, current_datetime):
+    # ideal values
+    temperature_min = 10
+    temperature_max = 20
+    humidity_min = 20
+    humidity_max = 75
+
     humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
 
-    # converting the temperature to Fahrenheit.
+    # converting the temperature to Fahrenheit
     # temperature = temperature * 9/5.0 + 32
 
     if humidity is not None and temperature is not None:
@@ -73,6 +78,8 @@ def read_from_dht(sensor, pin, current_datetime):
              str(current_datetime.strftime("%d-%m-%Y %H:%M:%S")))
     else:
         print('Failed to read humidity or temperature data. Try again!')
+    if humidity > (humidity_max + humidity_max * 0.01) or humidity < (humidity_min - humidity_min * 0.01) or temperature > (temperature_max + temperature_max * 0.01) or temperature < (temperature_min - temperature_min * 0.01):
+        print('Humidity and/or temperature are non-standard values.')
 
 
 # read gas concentration from MQ-135 sensor using analog output
